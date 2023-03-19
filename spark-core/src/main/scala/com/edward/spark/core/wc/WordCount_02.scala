@@ -3,7 +3,7 @@ package com.edward.spark.core.wc
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
-object WordCount {
+object WordCount_02 {
 
   def main(args: Array[String]): Unit = {
 
@@ -18,25 +18,17 @@ object WordCount {
     // 业务逻辑
 
     // 1 读取文件，一行一行读取
-    //  "hello world"
-    // 读取文件的时候要明确文件路径，否则会找hadoop路径导致报错，依赖winutils.exe
+
     val lines = sc.textFile("datas/data1.txt")
 
-//    val lines = spark.read.json("datas/data4.json").rdd
-//    val lines = spark.read.text("datas/data1.txt").rdd
-
     // 2 把一行文件的内容进行拆分
-    //  "hello world" = hello, world
-    val words = lines.flatMap(_.split(" "))
-
-    words.collect.foreach(println)
+    val words = lines.flatMap(_.split(" ")).map(a => (a, 1))
 
     // 3 拆分后对数据进行分组
-    // (hello, hello), (world, world)
-    val wordGroup = words.groupBy(word=>word)
+    val wordGroup = words.groupBy(word=>word._1)
 
     // 4 统计分组数据
-    val value = wordGroup.map(a => (a._1, a._2.size))
+    val value = wordGroup.map(a => a._2.reduce((x,y)=>(x._1 ,x._2 + y._2)))
 
     // 4 打印输出
     value.collect().foreach(println)
