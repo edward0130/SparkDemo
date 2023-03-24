@@ -1,4 +1,4 @@
-package com.edward.spark.core
+package com.edward.spark.core.test
 
 object T1 {
   def main(args: Array[String]): Unit = {
